@@ -45,7 +45,7 @@ const Index = () => {
               Tem peças para vender?
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
-              Cadastre-se gratuitamente e comece a anunciar suas peças para milhares de compradores. 12
+              Cadastre-se gratuitamente e comece a anunciar suas peças para milhares de compradores.
             </p>
             <Link
               to="/auth"
