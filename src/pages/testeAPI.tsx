@@ -1,45 +1,22 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
+import { useEffect } from "react";
+import { getProducts } from "../services/productService";
 
-interface Product {
-  id: number;
-  name: string;
-  code: string;
-  brand: string;
-  description: string;
-}
-
-export default function TestApi() {
-
-  const [products, setProducts] = useState<Product[]>([]);
+const TesteAPI = () => {
 
   useEffect(() => {
-    api.get("/products")
-      .then(res => {
-        console.log("SUCESSO:", res.data);
-        setProducts(res.data);
+    console.log("Chamando API...");
+
+    getProducts()
+      .then((data) => {
+        console.log("SUCESSO:", data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("ERRO:", err);
       });
+
   }, []);
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>Produtos</h1>
+  return <div>Teste API</div>;
+};
 
-      {products.map(product => (
-        <div key={product.id} style={{
-          border: "1px solid #ccc",
-          marginBottom: "10px",
-          padding: "10px"
-        }}>
-          <h3>{product.name}</h3>
-          <p><strong>Código:</strong> {product.code}</p>
-          <p><strong>Marca:</strong> {product.brand}</p>
-          <p>{product.description}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
+export default TesteAPI;
