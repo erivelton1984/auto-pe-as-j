@@ -1,9 +1,11 @@
 import Header from "@/components/Header";
 import { useParams, Link } from "react-router-dom";
-import { products } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
 import { MapPin, Star, ShoppingCart, ArrowLeft, Tag, Hash, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { getProductById } from "@/services/productService";
+import type { ProductUI } from "@/types/ProductUI";
 
 const conditionLabel: Record<string, string> = {
   novo: "Novo",
@@ -14,17 +16,20 @@ const conditionLabel: Record<string, string> = {
 const ProductDetail = () => {
   const { id } = useParams();
   const { addItem } = useCart();
-  const product = products.find((p) => p.id === id);
+  const [product, setProduct] = useState<ProductUI | null>(null);
+
+  useEffect(() => {
+    if (id) {
+      getProductById(id).then(setProduct);
+    }
+  }, [id]);
 
   if (!product) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-20 text-center">
-          <p className="text-2xl font-heading text-foreground">Peça não encontrada</p>
-          <Link to="/pecas" className="text-primary text-sm mt-4 inline-block hover:underline">
-            ← Voltar para peças
-          </Link>
+          <p className="text-2xl font-heading text-foreground">Carregando...</p>
         </div>
       </div>
     );
@@ -40,16 +45,18 @@ const ProductDetail = () => {
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Image */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="aspect-square rounded-2xl overflow-hidden bg-card border border-border"
           >
-            <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+            <img
+              src={product.image || "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600"}
+              alt={product.title}
+              className="w-full h-full object-cover"
+            />
           </motion.div>
 
-          {/* Info */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -69,31 +76,34 @@ const ProductDetail = () => {
             <div className="flex flex-wrap gap-3">
               <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-secondary-foreground text-xs font-medium">
                 <Tag className="w-3.5 h-3.5" />
-                {conditionLabel[product.condition]}
+                {conditionLabel[product.condition] || product.condition}
               </span>
               <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-secondary-foreground text-xs font-medium">
                 <Hash className="w-3.5 h-3.5" />
-                {product.serialNumber}
+                {product.serialNumber || "N/A"}
               </span>
               <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-secondary-foreground text-xs font-medium">
                 <Calendar className="w-3.5 h-3.5" />
-                {product.createdAt}
+                {product.createdAt || "-"}
               </span>
             </div>
 
-            <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+            <p className="text-muted-foreground leading-relaxed">
+              {product.description || "Sem descrição"}
+            </p>
 
-            {/* Seller */}
             <div className="p-4 rounded-xl bg-card border border-border space-y-2">
-              <p className="font-heading font-semibold text-foreground">{product.seller.name}</p>
+              <p className="font-heading font-semibold text-foreground">
+                {product.sellerName || "Vendedor"}
+              </p>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <MapPin className="w-4 h-4" />
-                  {product.seller.location}
+                  {product.location || "Brasil"}
                 </span>
                 <span className="flex items-center gap-1">
                   <Star className="w-4 h-4 fill-primary text-primary" />
-                  {product.seller.rating}
+                  {product.rating || 4.5}
                 </span>
               </div>
             </div>
