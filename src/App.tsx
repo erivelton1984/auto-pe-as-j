@@ -12,8 +12,7 @@ import Auth from "./pages/Auth";
 import MapPage from "./pages/MapPage";
 import CreateListing from "./pages/CreateListing";
 import NotFound from "./pages/NotFound";
-
-import TesteApi from "./pages/testeAPI";
+import "@/utils/leafletFix";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +32,6 @@ const App = () => (
             <Route path="/mapa" element={<MapPage />} />
             <Route path="/anunciar" element={<CreateListing />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="/api" element={<TesteApi />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

@@ -72,6 +72,16 @@ const Auth = () => {
               </div>
             )}
 
+            {mode === "register-seller" && (
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-foreground">Endereço</label>
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border focus-within:border-primary transition-colors">
+                  <Store className="w-4 h-4 text-muted-foreground" />
+                  <input type="text" placeholder="Endereço do seu comércio" className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none text-sm" />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-foreground">E-mail</label>
               <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border focus-within:border-primary transition-colors">

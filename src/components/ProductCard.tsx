@@ -1,13 +1,25 @@
 import { MapPin, Star, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { ProductUI } from "@/types/ProductUI";
+import type { Product } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
 import { motion } from "framer-motion";
 
 interface ProductCardProps {
-  product: ProductUI;
+  product: Product;
   index?: number;
 }
+
+const conditionLabel: Record<string, string> = {
+  novo: "Novo",
+  seminovo: "Seminovo",
+  usado: "Usado",
+};
+
+const conditionStyle: Record<string, string> = {
+  novo: "bg-success/20 text-success",
+  seminovo: "bg-primary/20 text-primary",
+  usado: "bg-muted text-muted-foreground",
+};
 
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const { addItem } = useCart();
@@ -21,42 +33,23 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
     >
       <Link to={`/peca/${product.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-          
-          {/* 🖼️ IMAGEM FAKE (fallback) */}
           <img
-            src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600"
+            src={product.images[0]}
             alt={product.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
-
-          {/* 🏷️ STATUS PADRÃO */}
-          <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-semibold bg-primary/20 text-primary">
-            Peça
+          <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-semibold ${conditionStyle[product.condition]}`}>
+            {conditionLabel[product.condition]}
           </span>
         </div>
       </Link>
-        {/* 📍 DISTÂNCIA */}
-  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-    <MapPin className="w-3.5 h-3.5" />
-    <span>
-      {product.distance
-        ? `${product.distance.toFixed(1)} km`
-        : "Local desconhecido"}
-    </span>
-
-    <span className="ml-auto flex items-center gap-1">
-      <Star className="w-3.5 h-3.5 fill-primary text-primary" />
-      4.5
-    </span>
-  </div>
 
       <div className="p-4 space-y-3">
         <div>
           <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-            {product.brand}
+            {product.brand} · {product.model} · {product.year}
           </p>
-
           <Link to={`/peca/${product.id}`}>
             <h3 className="mt-1 font-heading font-semibold text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors">
               {product.title}
@@ -64,14 +57,12 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           </Link>
         </div>
 
-        {/* 📍 LOCALIZAÇÃO FAKE (até vir da API) */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <MapPin className="w-3.5 h-3.5" />
-          <span>Brasil</span>
-
+          <span>{product.seller.location}</span>
           <span className="ml-auto flex items-center gap-1">
             <Star className="w-3.5 h-3.5 fill-primary text-primary" />
-            4.5
+            {product.seller.rating}
           </span>
         </div>
 
@@ -79,13 +70,13 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           <span className="font-heading font-bold text-xl text-primary">
             R$ {product.price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
           </span>
-
           <button
             onClick={(e) => {
               e.preventDefault();
               addItem(product);
             }}
             className="p-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+            aria-label="Adicionar ao carrinho"
           >
             <ShoppingCart className="w-4 h-4" />
           </button>
