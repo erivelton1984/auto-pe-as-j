@@ -12,13 +12,16 @@ import Auth from "./pages/Auth";
 import MapPage from "./pages/MapPage";
 import CreateListing from "./pages/CreateListing";
 import NotFound from "./pages/NotFound";
+import { AuthProvider } from "@/contexts/AuthContext";
 
-import TesteApi from "./pages/testeAPI";
+import PrivateRoute from "@/routes/ProvateRoutes";
+
+
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <AuthProvider client={queryClient}>
     <CartProvider>
       <TooltipProvider>
         <Toaster />
@@ -28,19 +31,37 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/pecas" element={<Products />} />
             <Route path="/peca/:id" element={<ProductDetail />} />
-            <Route path="/carrinho" element={<CartPage />} />
             <Route path="/auth" element={<Auth />} />
+
+            {/* 🔐 SOMENTE LOGADO */}
+            <Route
+              path="/carrinho"
+              element={
+                <PrivateRoute>
+                  <CartPage />
+                </PrivateRoute>
+              }
+            />
+
+            {/* 🏪 SOMENTE VENDEDOR */}
+            <Route
+              path="/anunciar"
+              element={
+                <PrivateRoute role="COMPANY">
+                  <CreateListing />
+                </PrivateRoute>
+              }
+            />
+
+            {/* 🗺️ OPCIONAL (pode deixar aberto se quiser) */}
             <Route path="/mapa" element={<MapPage />} />
-            <Route path="/anunciar" element={<CreateListing />} />
+
             <Route path="*" element={<NotFound />} />
-            <Route path="/api" element={<TesteApi />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </CartProvider>
-  </QueryClientProvider>
-
- 
+  </AuthProvider>
 );
 
 export default App;
