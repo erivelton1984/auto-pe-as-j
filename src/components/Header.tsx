@@ -1,19 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Search, MapPin, User, Menu, X } from "lucide-react";
+import { ShoppingCart, Search, MapPin, User, Menu, X, LogOut } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const { totalItems } = useCart();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const navLinks = [
     { to: "/", label: "Início" },
     { to: "/pecas", label: "Peças" },
     { to: "/mapa", label: "Mapa", icon: MapPin },
-    { to: "/anunciar", label: "Anunciar" },
+
+    ...(user?.role === "COMPANY"
+      ? [{ to: "/anunciar", label: "Anunciar" }]
+      : []),
+
   ];
 
   return (
@@ -53,7 +59,10 @@ const Header = () => {
             <Search className="w-5 h-5" />
           </Link>
 
-          <Link to="/carrinho" className="relative p-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+          <Link
+            to="/carrinho"
+            className="relative p-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
             <ShoppingCart className="w-5 h-5" />
             {totalItems > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
@@ -62,13 +71,30 @@ const Header = () => {
             )}
           </Link>
 
-          <Link
-            to="/auth"
-            className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
-          >
-            <User className="w-4 h-4" />
-            Entrar
-          </Link>
+          {/* 🔐 AUTH DINÂMICO */}
+          {!user ? (
+            <Link
+              to="/auth"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+            >
+              <User className="w-4 h-4" />
+              Entrar
+            </Link>
+          ) : (
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="text-sm text-foreground font-medium">
+                {user.name}
+              </span>
+
+              <button
+                onClick={logout}
+                className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Sair
+              </button>
+            </div>
+          )}
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -103,13 +129,27 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                to="/auth"
-                onClick={() => setMobileOpen(false)}
-                className="sm:hidden px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold text-center"
-              >
-                Entrar / Cadastrar
-              </Link>
+
+              {/* 🔐 MOBILE AUTH */}
+              {!user ? (
+                <Link
+                  to="/auth"
+                  onClick={() => setMobileOpen(false)}
+                  className="px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold text-center"
+                >
+                  Entrar / Cadastrar
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileOpen(false);
+                  }}
+                  className="px-4 py-2.5 rounded-lg text-sm font-semibold text-center bg-secondary"
+                >
+                  Sair ({user.name})
+                </button>
+              )}
             </div>
           </motion.nav>
         )}
