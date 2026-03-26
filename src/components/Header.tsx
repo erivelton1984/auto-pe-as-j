@@ -19,6 +19,7 @@ const Header = () => {
     ...(user?.role === "COMPANY"
       ? [{ to: "/anunciar", label: "Anunciar" }]
       : []),
+
   ];
 
   return (
