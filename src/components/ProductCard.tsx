@@ -34,13 +34,18 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       <Link to={`/peca/${product.id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
           <img
-            src={product.images[0]}
+
+            src={product.image || "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600"}
+
             alt={product.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
-          <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-semibold ${conditionStyle[product.condition]}`}>
-            {conditionLabel[product.condition]}
+
+
+          <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-semibold bg-primary/20 text-primary">
+            Peça
+
           </span>
         </div>
       </Link>
@@ -57,18 +62,20 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           </Link>
         </div>
 
+        {/* Localização simples (placeholder backend futuro) */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <MapPin className="w-3.5 h-3.5" />
-          <span>{product.seller.location}</span>
+          <span>{product.location || "Brasil"}</span>
+
           <span className="ml-auto flex items-center gap-1">
             <Star className="w-3.5 h-3.5 fill-primary text-primary" />
-            {product.seller.rating}
+            {product.rating || 4.5}
           </span>
         </div>
 
         <div className="flex items-center justify-between pt-2 border-t border-border">
           <span className="font-heading font-bold text-xl text-primary">
-            R$ {product.price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            {/*R$ {product.price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}*/}
           </span>
           <button
             onClick={(e) => {

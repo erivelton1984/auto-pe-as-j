@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   code: string;
   brand: string;
-  description: string;
+  description?: string;
   inventories: {
     id: number;
     quantity: number;
