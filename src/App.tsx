@@ -14,7 +14,7 @@ import CreateListing from "./pages/CreateListing";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/contexts/AuthContext";
 
-import PrivateRoute from "@/routes/ProvateRoutes";
+import PrivateRoute from "@/routes/PrivateRoutes";
 
 
 

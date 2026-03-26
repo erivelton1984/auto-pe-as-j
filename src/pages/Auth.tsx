@@ -52,7 +52,9 @@ const Auth = () => {
           })
         );
 
+        location.reload();
         navigate("/");
+
       } else {
         const role = mode === "register-seller" ? "COMPANY" : "CLIENT";
 
