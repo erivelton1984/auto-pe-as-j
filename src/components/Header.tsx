@@ -17,9 +17,11 @@ const Header = () => {
     { to: "/mapa", label: "Mapa", icon: MapPin },
 
     ...(user?.role === "COMPANY"
-      ? [{ to: "/anunciar", label: "Anunciar" }]
+      ? [
+          { to: "/vendedor", label: "Dashboard" },
+          { to: "/anunciar", label: "Anunciar" },
+        ]
       : []),
-
   ];
 
   return (
